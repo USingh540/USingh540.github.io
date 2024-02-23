@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Valentine's Day Drawing</title>
+    <script type="text/javascript" src="brython.js"></script>
+    <script type="text/javascript" src="brython_stdlib.js"></script>
+</head>
+
+<body onload="brython(1)">
+    <canvas id="valentineCanvas" width="1920" height="1080"></canvas>
+
+    <script type="text/python">
+        from browser import document, alert
+        from browser import document, timer
+        from browser import document
+        import base64
+
+        # Constants
+        CANVAS_WIDTH = 1920
+        CANVAS_HEIGHT = 1080
+        UV_COLOR = (205, 133, 63)  # Light Brown
+        RUBY_COLOR = (210, 180, 140)  # Tan
+        CLOTHES_COLOR = (128, 128, 128)  # Gray
+        LEGS_COLOR = (0, 0, 255)  # Blue
+        TORSO_COLOR = (139, 69, 19)  # Dark Brown
+        
+        def draw_valentines_background(context):
+            import random
+
+            # Draw a thick black rectangle covering the entire canvas
+            context.beginPath()
+            context.rect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)  # Create a rectangle covering the entire canvas
+            context.strokeStyle = 'black'  # Set the line color to black
+            context.lineWidth = 10000  # Set a really big line width
+            context.stroke()  # Draw the rectangle with the thick line
+            context.closePath()
+
+            #green
+            context.fillStyle = 'green'  # Set the fill color to green
+            context.fillRect(0, CANVAS_HEIGHT * 0.5, CANVAS_WIDTH, CANVAS_HEIGHT * 0.5)  # Fill the bottom quarter of the canvas with green
+
+            # Draw stars in the sky
+            num_stars = 100  # Adjust the number of stars as needed
+            context.fillStyle = 'white'  # Set the fill style to white for stars
+            for _ in range(num_stars):
+                x = random.randint(0, CANVAS_WIDTH)  # Random x-coordinate
+                y = random.randint(0, int(CANVAS_HEIGHT * 0.50))  # Random y-coordinate within the top 75% of the canvas
+                size = random.randint(1, 3)  # Random size for the star
+                context.beginPath()
+                context.arc(x, y, size, 0, 2 * 3.14159)  # Draw a circle for the star
+                context.fill()  # Fill the circle with white color
+                context.closePath()
+
+
+
+        def draw_love_heart(context, x, y, size):
+            context.beginPath();
+            context.moveTo(x, (y + size / 4));
+            context.quadraticCurveTo(x, y, x + size / 4, y);
+            context.quadraticCurveTo(x + size / 2, y, x + size / 2, y + size / 4);
+            context.quadraticCurveTo(x + size / 2, y, x + size * 3 / 4, y);
+            context.quadraticCurveTo(x + size, y, x + size, y + size / 4);
+            context.quadraticCurveTo(x + size, y + size / 2, x + size * 3 / 4, y + size * 3 / 4);
+            context.lineTo(x + size / 2, y + size);
+            context.lineTo(x + size / 4, y + size * 3 / 4);
+            context.quadraticCurveTo(x, y + size / 2, x, y + size / 4);
+            context.fillStyle = "red";  # Red color for heart
+            context.fill();
+            context.closePath();
+
+        def draw_pink_gate(context):
+            
+            # Pink heart shape
+            heart_size = 500  # Size of the heart
+            heart_x = (CANVAS_WIDTH - heart_size) // 2  # X-coordinate to center the heart
+            heart_y = CANVAS_HEIGHT * 0.2  # Y-coordinate to position the heart above the green part
+            
+            # Draw the heart shape
+            context.beginPath()
+            context.moveTo(heart_x, heart_y + heart_size / 4)
+            context.quadraticCurveTo(heart_x, heart_y, heart_x + heart_size / 4, heart_y)
+            context.quadraticCurveTo(heart_x + heart_size / 2, heart_y, heart_x + heart_size / 2, heart_y + heart_size / 4)
+            context.quadraticCurveTo(heart_x + heart_size / 2, heart_y, heart_x + heart_size * 3 / 4, heart_y)
+            context.quadraticCurveTo(heart_x + heart_size, heart_y, heart_x + heart_size, heart_y + heart_size / 4)
+            context.quadraticCurveTo(heart_x + heart_size, heart_y + heart_size / 2, heart_x + heart_size * 3 / 4, heart_y + heart_size * 3 / 4)
+            context.lineTo(heart_x + heart_size / 2, heart_y + heart_size)
+            context.lineTo(heart_x + heart_size / 4, heart_y + heart_size * 3 / 4)
+            context.quadraticCurveTo(heart_x, heart_y + heart_size / 2, heart_x, heart_y + heart_size / 4)
+            context.fillStyle = "#FF69B4"  # Pink color for heart
+            context.fill()
+            context.closePath()
+
+            # Green part
+            context.fillStyle = 'green'  # Set the fill color to green
+            context.fillRect(0, CANVAS_HEIGHT * 0.5, CANVAS_WIDTH, CANVAS_HEIGHT * 0.5)  # Fill the bottom quarter of the canvas with green
+
+
+
+
+
+
+        def draw_tree(context):
+            trunk_height = 200
+            trunk_width = 50
+            canopy_radius = 150
+            
+            # Draw trunk
+            context.fillStyle = "#8B4513"  # Brown color
+            context.fillRect(CANVAS_WIDTH - 375, CANVAS_HEIGHT - trunk_height - 500, trunk_width, trunk_height)
+            
+            # Draw canopy
+            context.fillStyle = "#228B22"  # Green color
+            context.beginPath()
+            context.arc(CANVAS_WIDTH - 350, CANVAS_HEIGHT - 1000 + trunk_height, canopy_radius, 0, 2 * 3.14159)
+            context.fill()
+            context.closePath()
+
+
+        def draw_envelope(context, x, y, size=100, color="red"):
+            # Draw envelope body
+            context.fillStyle = color
+            context.fillRect(x, y, size, size * 0.6)
+            
+            # Draw envelope flap
+            context.beginPath()
+            context.moveTo(x, y)
+            context.lineTo(x + size * 0.5, y - size * 0.3)
+            context.lineTo(x + size, y)
+            context.closePath()
+            context.fill()
+        
+            # Draw envelope outline
+            context.strokeStyle = "black"
+            context.lineWidth = 2
+            context.strokeRect(x, y, size, size * 0.6)
+
+            # Draw "Open This" text
+            context.fillStyle = "red"
+            context.font = "bold 80px Arial"
+            text = "Open This"
+            text_width = context.measureText(text).width
+            context.fillText(text, x + size / 2 - text_width / 2, y + size * 0.3)
+
+            # Create and append the envelope element
+            envelope = document.createElement("div")  # Assuming you're using a div for the envelope
+            envelope.style.position = "absolute"
+            envelope.style.left = "710px"  # Adjust these values as needed
+            envelope.style.top = "150px"   # Adjust these values as needed
+            envelope.style.width = "500px"  # Adjust these values as needed
+            envelope.style.height = "300px" # Adjust these values as needed
+            envelope.style.cursor = "pointer"  # Change cursor to pointer when hovering over the envelope
+            envelope.addEventListener("click", on_envelope_click)  # Use addEventListener instead of bind
+            document.body.appendChild(envelope)
+        
+        
+        def on_envelope_click(event):
+            # Clear the entire page
+            document.body.innerHTML = ""
+            
+            # Create a textarea for the user to write
+            text_area = document.createElement("textarea")
+            text_area.style.width = "90%"
+            text_area.style.height = "90%"
+            text_area.style.margin = "5%"
+            text_area.readOnly = True  # Make the textarea non-editable
+            text_area.value = "Writing this out is cringe asf. So instead decode my morse code message in the top left and look at drawing of you (Ostrich Ruby - Uv)"
+
+            audio_link = document.createElement("a")
+            audio_link.href = "morse.mp3"
+            audio_link.innerHTML = "Morse Code :)"
+            document.body.appendChild(audio_link)
+
+            add_image("Untitled.png", 600, 400, 500, 200)
+
+            document.body.appendChild(audio_link)
+            document.body.appendChild(text_area)
+
+
+        def add_image(image_filename, width, height, x, y):
+            img = document.createElement("img")
+            img.src = image_filename  # Assuming image_filename is just the name of the image file
+            img.width = width
+            img.height = height
+            img.style.position = "absolute"
+            img.style.left = f"{x}px"
+            img.style.top = f"{y}px"
+            document.body.appendChild(img)
+        
+        # Manually encode the image file into base64 format
+        def encode_image_to_base64(image_filename):
+            with open(image_filename, "rb") as f:
+                image_data = f.read()
+            # Convert bytes to base64 encoded string
+            import base64
+            return base64.b64encode(image_data).decode('utf-8')
+
+
+
+        from browser import document, alert
+
+        # Function to display text box
+        def display_textbox(event):
+            # Check if the click event occurred within the bounds of the rat
+            x = event.clientX
+            y = event.clientY
+            if 170 <= x <= 230 and 450 <= y <= 530:  # Adjusted click region for rat
+                # Display a text box at the mouse click position
+                text_box = document.createElement("textarea")  # Use textarea for a larger text box
+                text_box.value = "This dosnt exactly qualify as Valentines, so instead treat this like a gift... the rat is your spirit animal btw :)"  # Set initial value
+                text_box.style.position = "absolute"
+                text_box.style.left = f"{x}px"
+                text_box.style.top = f"{y - 200}px"  # Adjust y position to appear above the rat
+                text_box.readOnly = True  # Make the text box non-editable
+                text_box.rows = 4  # Set the number of rows
+                text_box.cols = 30  # Set the number of columns
+                document.body.appendChild(text_box)
+                timer.set_timeout(lambda: text_box.parentNode.removeChild(text_box), 8000)
+
+        def draw_rat(context):
+            # Rat body
+            context.fillStyle = "gray"
+            context.beginPath()
+            context.arc(200, 500, 30, 0, 2 * 3.14159)  # Body
+            context.fill()
+            context.closePath()
+        
+            # Rat head
+            context.beginPath()
+            context.arc(200, 470, 20, 0, 2 * 3.14159)  # Head
+            context.fill()
+            context.closePath()
+        
+            # Rat eyes
+            context.fillStyle = "black"
+            context.beginPath()
+            context.arc(190, 465, 3, 0, 2 * 3.14159)  # Left eye
+            context.arc(210, 465, 3, 0, 2 * 3.14159)  # Right eye
+            context.fill()
+            context.closePath()
+        
+            # Rat nose
+            context.beginPath()
+            context.arc(200, 475, 2, 0, 2 * 3.14159)
+            context.fill()
+            context.closePath()
+        
+            # Rat tail (shortened)
+            context.beginPath()
+            context.moveTo(170, 500)
+            context.quadraticCurveTo(100, 400, 120, 470)  # Adjusted tail end position
+            context.lineWidth = 5
+            context.strokeStyle = "gray"
+            context.stroke()
+            context.closePath()
+
+            draw_love_heart(context, 205, 490, 10)
+
+
+
+        # Function to display text box for UV
+        def display_uv_textbox(event, context):
+            # Check if the click event occurred within the bounds of the rat
+            x = event.clientX
+            y = event.clientY
+            if 900 <= x <= 950 and 350 <= y <= 550:  # Adjusted click region for uv
+                # Display a text box at the mouse click position
+                uv_text_box = document.createElement("textarea")  # Use textarea for a larger text box
+                uv_text_box.value = "Accept this cool (and popular) guy's flowers? 😮😮"  # Set initial value
+                uv_text_box.style.position = "absolute"
+                uv_text_box.style.left = f"{x - 300}px"
+                uv_text_box.style.top = f"{y - 200}px"  # Adjust y position to appear above the uv
+                uv_text_box.readOnly = True  # Make the text box non-editable
+                uv_text_box.rows = 4  # Set the number of rows
+                uv_text_box.cols = 30  # Set the number of columns
+                document.body.appendChild(uv_text_box)
+                timer.set_timeout(lambda: uv_text_box.parentNode.removeChild(uv_text_box), 6000)
+                
+        
+                # Add "Yes" button
+                yes_button = document.createElement("button")
+                yes_button.innerHTML = "Yes"
+                yes_button.style.position = "absolute"
+                yes_button.style.left = f"{x - 300}px"
+                yes_button.style.top = f"{y + 100}px"
+                document.body.appendChild(yes_button)
+                timer.set_timeout(lambda: yes_button.parentNode.removeChild(yes_button), 6000)
+        
+                # Add "No" button
+                no_button = document.createElement("button")
+                no_button.innerHTML = "No"
+                no_button.style.position = "absolute"
+                no_button.style.left = f"{x - 200}px"
+                no_button.style.top = f"{y + 100}px"
+                document.body.appendChild(no_button)
+                timer.set_timeout(lambda: no_button.parentNode.removeChild(no_button), 6000)
+        
+                # Bind click events to the buttons
+                yes_button.bind("click", lambda event: on_yes_click(context))
+                no_button.bind("click", lambda event: on_no_click())
+        
+                # Function to create a new text box
+        def create_text_box():
+            # Create a new text box element
+            new_text_box = document.createElement("textarea")
+            new_text_box.value = "Good Choice!"
+            new_text_box.style.position = "absolute"
+            new_text_box.style.left = "700px"  # Adjust the position as needed
+            new_text_box.style.top = "600px"   # Adjust the position as needed
+            new_text_box.readOnly = True       # Make the text box non-editable
+            new_text_box.rows = 4
+            new_text_box.cols = 30
+            document.body.appendChild(new_text_box)
+            timer.set_timeout(lambda: new_text_box.parentNode.removeChild(new_text_box), 6000)
+        
+        def create_text_box2():
+            # Create a new text box element
+            new_text_box = document.createElement("textarea")
+            new_text_box.value = "Hey, I think you clicked the wrong button..."
+            new_text_box.style.position = "absolute"
+            new_text_box.style.left = "700px"  # Adjust the position as needed
+            new_text_box.style.top = "600px"   # Adjust the position as needed
+            new_text_box.readOnly = True       # Make the text box non-editable
+            new_text_box.rows = 4
+            new_text_box.cols = 30
+            document.body.appendChild(new_text_box)
+            timer.set_timeout(lambda: new_text_box.parentNode.removeChild(new_text_box), 6000)
+
+        
+        # Function to handle "Yes" button click event
+        def on_yes_click(context):
+            print("Yes button clicked!")
+            # Call the function to create a new text box
+            draw_envelope(context, 710, 150, size=500, color="white")
+        
+        def on_no_click():
+            create_text_box2()
+            
+
+            
+        def clear_canvas(context):
+            # Get the width and height of the canvas
+            canvas_width = context.canvas.width
+            canvas_height = context.canvas.height
+        
+            # Clear the entire canvas
+            context.clearRect(0, 0, canvas_width, canvas_height)
+
+
+
+
+        # Define ruby_text_box globally
+        ruby_text_box = None
+        
+        # Function to display text box for ruby
+        def display_ruby_textbox(context, event):
+            global ruby_text_box
+            # Check if the click event occurred within the bounds of ruby
+            x = event.clientX
+            y = event.clientY
+            if 1000 <= x <= 1050 and 350 <= y <= 550:  # Adjusted click region for ruby
+                # Display a text box at the mouse click position
+                ruby_text_box = document.createElement("textarea")  # Use textarea for a larger text box
+                ruby_text_box.value = "Wow, this super cool and popular and cool (and popular) guy is giving me flowers!😮😮"  # Set initial value
+                ruby_text_box.style.position = "absolute"
+                ruby_text_box.style.left = f"{x + 100}px"
+                ruby_text_box.style.top = f"{y - 300}px"  # Adjust y position to appear above the rat
+                ruby_text_box.readOnly = True  # Make the text box non-editable
+                ruby_text_box.rows = 4  # Set the number of rows
+                ruby_text_box.cols = 30  # Set the number of columns
+                document.body.appendChild(ruby_text_box)
+                timer.set_timeout(lambda: ruby_text_box.parentNode.removeChild(ruby_text_box), 8000)
+
+
+
+            import math
+
+            def draw_rotated_ruby(context):
+                # Adjusted coordinates for a 1920 x 1080 screen
+                SCREEN_WIDTH = 1920
+                SCREEN_HEIGHT = 1080
+            
+                # Calculate the x-coordinate for the middle area, then adjust it to move Ruby slightly to the left
+                middle_x = (SCREEN_WIDTH // 2) + 50
+            
+                # Calculate the y-coordinates for Ruby's elements
+                head_y = (SCREEN_HEIGHT // 2) - 140
+                eyes_y = head_y - 5
+                body_start_y = head_y + 30
+                arms_start_y = head_y + 40
+                legs_start_y = head_y + 100
+            
+                # Save the current state of the canvas
+                context.save()
+            
+                # Rotate the canvas 90 degrees clockwise around the middle of Ruby
+                context.translate(middle_x, head_y)
+                context.rotate(math.radians(90))
+                context.translate(-middle_x, -head_y)
+            
+                # Head
+                context.beginPath()
+                context.arc(head_y, SCREEN_WIDTH - middle_x, 30, 0, 2 * math.pi)
+                context.fillStyle = "rgb(255, 218, 185)"  # Light tan color for skin
+                context.fill()
+                context.closePath()
+            
+                # Eyes
+                context.fillStyle = "black"
+                context.beginPath()
+                context.arc(head_y + 8, SCREEN_WIDTH - eyes_y, 3, 0, 2 * math.pi)  # Left eye
+                context.arc(head_y - 8, SCREEN_WIDTH - eyes_y, 3, 0, 2 * math.pi)  # Right eye
+                context.fill()
+                context.closePath()
+            
+                # Normal eyebrows
+                context.beginPath()
+                context.moveTo(head_y + 5, SCREEN_WIDTH - (eyes_y - 14))
+                context.lineTo(head_y + 5, SCREEN_WIDTH - (eyes_y - 6))  # Left eyebrow
+                context.moveTo(head_y + 5, SCREEN_WIDTH - (eyes_y + 6))
+                context.lineTo(head_y + 5, SCREEN_WIDTH - (eyes_y + 14))  # Right eyebrow
+                context.strokeStyle = "black"
+                context.lineWidth = 2
+                context.stroke()
+                context.closePath()
+            
+                # Oval-shaped smile
+                context.beginPath()
+                context.ellipse(head_y + 10, SCREEN_WIDTH - (head_y - 10), 12, 8, 0, 0, 2 * math.pi)  # Oval-shaped smile
+                context.lineWidth = 2
+                context.stroke()
+                context.closePath()
+            
+                # Body
+                context.beginPath()
+                context.moveTo(body_start_y, SCREEN_WIDTH - middle_x)
+                context.lineTo(body_start_y + 70, SCREEN_WIDTH - middle_x)
+                context.lineWidth = 5
+                context.strokeStyle = "rgb(255, 218, 185)"  # Light tan color for skin
+                context.stroke()
+                context.closePath()
+            
+                # Torso
+                context.fillStyle = "red"  # Red color for torso
+                context.fillRect(body_start_y, SCREEN_WIDTH - (middle_x - 10), 70, 20)  # Torso
+            
+                # Arms
+                context.beginPath()
+                context.moveTo(arms_start_y, SCREEN_WIDTH - middle_x - 10)
+                context.lineTo(arms_start_y + 40, SCREEN_WIDTH - middle_x - 40)  # Left arm
+                context.moveTo(arms_start_y, SCREEN_WIDTH - middle_x + 10)
+                context.lineTo(arms_start_y + 40, SCREEN_WIDTH - middle_x + 40)  # Right arm
+                context.lineWidth = 3
+                context.strokeStyle = "rgb(255, 218, 185)"  # Light tan color for skin
+                context.stroke()
+                context.closePath()
+            
+                # Hands
+                context.fillStyle = "rgb(255, 218, 185)"  # Light tan color for skin
+                context.beginPath()
+                context.arc(arms_start_y + 40, SCREEN_WIDTH - (middle_x - 40), 8, 0, 2 * math.pi)  # Left hand
+                context.arc(arms_start_y + 40, SCREEN_WIDTH - (middle_x + 40), 8, 0, 2 * math.pi)  # Right hand
+                context.fill()
+                context.closePath()
+            
+                # Legs (Darker blue jeans)
+                context.beginPath()
+                context.moveTo(legs_start_y, SCREEN_WIDTH - middle_x)
+                context.lineTo(legs_start_y + 40, SCREEN_WIDTH - (middle_x - 30))  # Left leg
+                context.moveTo(legs_start_y, SCREEN_WIDTH - middle_x)
+                context.lineTo(legs_start_y + 40, SCREEN_WIDTH - (middle_x + 30))  # Right leg
+                context.lineWidth = 4
+                context.strokeStyle = "darkblue"  # Darker blue color for jeans
+                context.stroke()
+                context.closePath()
+            
+                # Restore the previous state of the canvas
+                context.restore()
+                
+
+        
+
+        # Function to draw UV
+        def draw_uv(context):
+            SCREEN_WIDTH = 1920
+            SCREEN_HEIGHT = 1080
+            
+            # Calculate UV's position
+            uv_x = SCREEN_WIDTH // 2 - 50  # Adjusted x-coordinate
+            uv_y = SCREEN_HEIGHT // 2 - 140
+
+            # Head
+            context.beginPath()
+            context.arc(uv_x, uv_y, 30, 0, 2 * 3.14159)
+            context.fillStyle = f'rgb({UV_COLOR[0]}, {UV_COLOR[1]}, {UV_COLOR[2]})'
+            context.fill()
+            context.closePath()
+
+            # Eyes
+            context.fillStyle = "black"
+            context.beginPath()
+            context.arc(uv_x - 8, uv_y - 5, 3, 0, 2 * 3.14159)  # Left eye
+            context.arc(uv_x + 8, uv_y - 5, 3, 0, 2 * 3.14159)  # Right eye
+            context.fill()
+            context.closePath()
+
+            # Eyebrows
+            context.beginPath()
+            context.moveTo(uv_x - 14, uv_y - 15)
+            context.quadraticCurveTo(uv_x - 8, uv_y - 17, uv_x, uv_y - 15)  # Left eyebrow
+            context.moveTo(uv_x + 8, uv_y - 17)
+            context.quadraticCurveTo(uv_x + 15, uv_y - 20, uv_x + 22, uv_y - 14)  # Right eyebrow (adjusted)
+            context.strokeStyle = "black"
+            context.lineWidth = 2
+            context.stroke()
+            context.closePath()
+
+            # Mouth
+            context.beginPath()
+            context.arc(uv_x, uv_y + 10, 15, 0.1 * 3.14159, 0.6 * 3.14159)  # Smirking mouth
+            context.lineWidth = 2
+            context.strokeStyle = "black"
+            context.stroke()
+            context.closePath()
+
+            # Body
+            context.beginPath()
+            context.moveTo(uv_x, uv_y + 30)
+            context.quadraticCurveTo(uv_x - 10, uv_y + 60, uv_x, uv_y + 100)  # Curve for torso
+            context.lineWidth = 5
+            context.strokeStyle = f'rgb({UV_COLOR[0]}, {UV_COLOR[1]}, {UV_COLOR[2]})'
+            context.stroke()
+            context.closePath()
+
+            # Dark Brown Torso
+            context.fillStyle = f'rgb({TORSO_COLOR[0]}, {TORSO_COLOR[1]}, {TORSO_COLOR[2]})'
+            context.fillRect(uv_x - 10, uv_y + 30, 20, 70)  # Torso
+
+            # Arms
+            context.beginPath()
+            context.moveTo(uv_x - 10, uv_y + 40)
+            context.lineTo(uv_x - 40, uv_y + 80)  # Left arm
+            context.moveTo(uv_x + 10, uv_y + 40)
+            context.lineTo(uv_x + 40, uv_y + 80)  # Right arm
+            context.lineWidth = 3
+            context.strokeStyle = f'rgb({UV_COLOR[0]}, {UV_COLOR[1]}, {UV_COLOR[2]})'  # Light brown for arms
+            context.stroke()
+            context.closePath()
+
+            # Hands
+            context.fillStyle = f'rgb({UV_COLOR[0]}, {UV_COLOR[1]}, {UV_COLOR[2]})'
+            context.beginPath()
+            context.arc(uv_x - 40, uv_y + 80, 8, 0, 2 * 3.14159)  # Left hand
+            context.arc(uv_x + 40, uv_y + 80, 8, 0, 2 * 3.14159)  # Right hand
+            context.fill()
+            context.closePath()
+
+            # Legs
+            context.beginPath()
+            context.moveTo(uv_x, uv_y + 100)
+            context.lineTo(uv_x - 30, uv_y + 140)  # Left leg
+            context.moveTo(uv_x, uv_y + 100)
+            context.lineTo(uv_x + 30, uv_y + 140)  # Right leg
+            context.lineWidth = 4
+            context.strokeStyle = "darkblue"  # Darker blue color for jeans
+            context.stroke()
+            context.closePath()
+
+            # Rose in right hand
+            context.fillStyle = "green"  # Green for stem
+            context.beginPath()
+            context.moveTo(uv_x + 40, uv_y + 45)  # Adjusted stem position
+            context.lineTo(uv_x + 40, uv_y + 100)  # Longer stem vertically
+            context.lineWidth = 4  # Stem thickness
+            context.strokeStyle = "green"  # Green for stem
+            context.stroke()
+            context.closePath()
+
+            # Flower
+            context.fillStyle = "red"  # Red for rose petals
+            context.beginPath()
+            context.arc(uv_x + 40, uv_y + 30, 7, 0, 2 * 3.14159)  # Center petal
+            context.fill()
+            context.arc(uv_x + 50, uv_y + 30, 7, 0, 2 * 3.14159)  # Right petal
+            context.fill()
+            context.arc(uv_x + 30, uv_y + 30, 7, 0, 2 * 3.14159)  # Left petal
+            context.fill()
+            context.arc(uv_x + 40, uv_y + 20, 7, 0, 2 * 3.14159)  # Top petal
+            context.fill()
+            context.arc(uv_x + 40, uv_y + 40, 7, 0, 2 * 3.14159)  # Bottom petal
+            context.fill()
+            context.closePath()
+
+
+
+        def draw_ruby(context):
+            # Adjusted coordinates for a 1920 x 1080 screen
+            SCREEN_WIDTH = 1920
+            SCREEN_HEIGHT = 1080
+            
+            # Calculate the x-coordinate for the middle area, then adjust it to move Ruby slightly to the left
+            middle_x = (SCREEN_WIDTH // 2) +50
+            
+            # Calculate the y-coordinates for Ruby's elements
+            head_y = (SCREEN_HEIGHT // 2) - 140
+            eyes_y = head_y - 5
+            body_start_y = head_y + 30
+            arms_start_y = head_y + 40
+            legs_start_y = head_y + 100
+        
+            # Head
+            context.beginPath()
+            context.arc(middle_x, head_y, 30, 0, 2 * 3.14159)
+            context.fillStyle = "rgb(255, 218, 185)"  # Light tan color for skin
+            context.fill()
+            context.closePath()
+        
+            # Eyes
+            context.fillStyle = "black"
+            context.beginPath()
+            context.arc(middle_x - 8, eyes_y, 3, 0, 2 * 3.14159)  # Left eye
+            context.arc(middle_x + 8, eyes_y, 3, 0, 2 * 3.14159)  # Right eye
+            context.fill()
+            context.closePath()
+        
+            # Normal eyebrows
+            context.beginPath()
+            context.moveTo(middle_x - 14, eyes_y - 5)
+            context.lineTo(middle_x - 6, eyes_y - 5)  # Left eyebrow
+            context.moveTo(middle_x + 6, eyes_y - 5)
+            context.lineTo(middle_x + 14, eyes_y - 5)  # Right eyebrow
+            context.strokeStyle = "black"
+            context.lineWidth = 2
+            context.stroke()
+            context.closePath()
+        
+            # Oval-shaped smile
+            context.beginPath()
+            context.ellipse(middle_x, head_y + 10, 12, 8, 0, 0, 2 * 3.14159)  # Oval-shaped smile
+            context.lineWidth = 2
+            context.stroke()
+            context.closePath()
+        
+            # Body
+            context.beginPath()
+            context.moveTo(middle_x, body_start_y)
+            context.lineTo(middle_x, body_start_y + 70)
+            context.lineWidth = 5
+            context.strokeStyle = "rgb(255, 218, 185)"  # Light tan color for skin
+            context.stroke()
+            context.closePath()
+        
+            # Torso
+            context.fillStyle = "red"  # Red color for torso
+            context.fillRect(middle_x - 10, body_start_y, 20, 70)  # Torso
+        
+            # Arms
+            context.beginPath()
+            context.moveTo(middle_x - 10, arms_start_y)
+            context.lineTo(middle_x - 40, arms_start_y + 40)  # Left arm
+            context.moveTo(middle_x + 10, arms_start_y)
+            context.lineTo(middle_x + 40, arms_start_y + 40)  # Right arm
+            context.lineWidth = 3
+            context.strokeStyle = "rgb(255, 218, 185)"  # Light tan color for skin
+            context.stroke()
+            context.closePath()
+        
+            # Hands
+            context.fillStyle = "rgb(255, 218, 185)"  # Light tan color for skin
+            context.beginPath()
+            context.arc(middle_x - 40, arms_start_y + 40, 8, 0, 2 * 3.14159)  # Left hand
+            context.arc(middle_x + 40, arms_start_y + 40, 8, 0, 2 * 3.14159)  # Right hand
+            context.fill()
+            context.closePath()
+        
+            # Legs (Darker blue jeans)
+            context.beginPath()
+            context.moveTo(middle_x, legs_start_y)
+            context.lineTo(middle_x - 30, legs_start_y + 40)  # Left leg
+            context.moveTo(middle_x, legs_start_y)
+            context.lineTo(middle_x + 30, legs_start_y + 40)  # Right leg
+            context.lineWidth = 4
+            context.strokeStyle = "darkblue"  # Darker blue color for jeans
+            context.stroke()
+            context.closePath()
+        
+        
+
+
+        # Main function to initialize canvas and drawing
+        def main():
+            canvas = document["valentineCanvas"]
+            context = canvas.getContext("2d")
+            draw_valentines_background(context)
+            draw_pink_gate(context)  # Draw the pink gate
+            draw_uv(context)
+            draw_ruby(context)
+            draw_tree(context)
+            draw_rat(context)
+            canvas.bind("click", display_textbox)  # Add event listener for click
+            canvas.bind("click", lambda event: display_uv_textbox(event, context))
+            canvas.bind("click", lambda event: display_ruby_textbox(context, event))
+
+
+
+        # Start the main function after the page loads
+        main()
+    </script>
+
+
+</body>
+
+</html>
